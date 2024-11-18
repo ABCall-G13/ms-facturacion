@@ -1,0 +1,40 @@
+services:
+  database:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password  
+      MYSQL_DATABASE: facturacion
+    ports:
+      - "3306:3306"  # Exponer el puerto 3306
+    volumes:
+      - mysql_data:/var/lib/mysql  # Persistencia de los datos en un volumen
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  
+    networks:
+      - backend
+    restart: always  # Agregar restart en lugar de deploy
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: billing_backend
+    networks:
+      - backend
+    ports:
+      - '${DOCKER_BACKEND_PORT}:8080'
+    env_file:
+      - .env  # Cargamos variables de entorno desde el archivo .env
+    volumes:
+      - ./.env:/app/.env
+      - ./${JSON_KEY_FILE}:/app/${JSON_KEY_FILE}  # Montamos el archivo JSON en el contenedor del backend
+    restart: always  # Agregar restart en lugar de deploy
+    depends_on:
+      - database
+
+volumes:
+  mysql_data:
+
+networks:
+  backend:
+    external: true
+    name: prueba
