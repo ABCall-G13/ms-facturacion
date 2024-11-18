@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import usuario
+from app.routers import factura, incidente_factura
 from app.db.session import engine
 from app.db.base import Base
 
@@ -23,7 +23,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(usuario.router)
+app.include_router(factura.router)
+app.include_router(incidente_factura.router)
 
 
 if __name__ == "__main__":

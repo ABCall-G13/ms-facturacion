@@ -1,30 +1,17 @@
 services:
   database:
-      image: mysql:8.0
-      environment:
-        MYSQL_ROOT_PASSWORD: password  
-        MYSQL_DATABASE: facturacion
-      ports:
-        - "3306:3306"  # Exponer el puerto 3306
-      volumes:
-        - mysql_data:/var/lib/mysql  # Persistencia de los datos en un volumen
-      networks:
-        - backend
-      deploy:
-        resources:
-          limits:
-            cpus: '0.50'
-            memory: 512M
-
-  redis:
-    image: redis:alpine
-    container_name: redis_service_billing
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password  
+      MYSQL_DATABASE: facturacion
+    ports:
+      - "3306:3306"  # Exponer el puerto 3306
+    volumes:
+      - mysql_data:/var/lib/mysql  # Persistencia de los datos en un volumen
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  
     networks:
       - backend
-    ports:
-      - '${DOCKER_REDIS_PORT}:6379'
-    env_file:
-      - .env
+    restart: always  # Agregar restart en lugar de deploy
 
   backend:
     build:
@@ -40,18 +27,14 @@ services:
     volumes:
       - ./.env:/app/.env
       - ./${JSON_KEY_FILE}:/app/${JSON_KEY_FILE}  # Montamos el archivo JSON en el contenedor del backend
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 512M
+    restart: always  # Agregar restart en lugar de deploy
     depends_on:
       - database
-      
+
 volumes:
   mysql_data:
 
 networks:
   backend:
-    external: false
+    external: true
     name: prueba
