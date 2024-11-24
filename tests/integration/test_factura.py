@@ -1,3 +1,4 @@
+from unittest.mock import AsyncMock, patch
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -28,6 +29,29 @@ def client(session):
     yield TestClient(app)
     app.dependency_overrides = {}
 
+def test_listar_facturas_by_client_success(client):
+
+        factura_data = {
+            "cliente_nit": "123456789",
+            "fecha_inicio": "2024-01-01",
+            "fecha_fin": "2024-01-31",
+            "monto_base": 100.0,
+            "monto_adicional": 20.0,
+            "monto_total": 120.0,
+            "estado": "pendiente"
+        }
+        response = client.post("/facturas", json=factura_data)
+        assert response.status_code == 200
+
+        with patch("app.routers.factura.verificar_cliente_existente", new_callable=AsyncMock) as mock_verificar_cliente_existente:
+            mock_verificar_cliente_existente.return_value = "8812023"  # Devuelve un `nit` válido
+
+        response = client.get("/facturas-by-client")
+
+        assert response.status_code == 401
+        facturas = response.json()
+        assert len(facturas) == 1
+                
 def test_create_factura(client):
     factura_data = {
         "cliente_nit": "123456789",

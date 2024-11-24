@@ -2,12 +2,13 @@ import tempfile
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
+from app.external_services.cliente_service import verificar_cliente_existente
 from app.schemas.factura import FacturaCreate, FacturaResponse
-from app.crud.factura import create_factura, get_factura_by_id, get_all_facturas
+from app.crud.factura import create_factura, get_factura_by_id, get_all_facturas, get_facturas_by_cliente
 from app.db.session import get_db
 from typing import List
-
 from app.utils.pdf_generator import generar_pdf_factura
+from app.utils.security import UserToken, get_current_user_token
 
 router = APIRouter()
 
@@ -21,6 +22,11 @@ def registrar_factura(factura: FacturaCreate, db: Session = Depends(get_db)):
 @router.get("/facturas", response_model=List[FacturaResponse])
 def listar_facturas(db: Session = Depends(get_db)):
     return get_all_facturas(db)
+
+@router.get("/facturas-by-client", response_model=List[FacturaResponse])
+async def listar_facturas(db: Session = Depends(get_db),  user_token: UserToken = Depends(get_current_user_token),):
+    nit = await verificar_cliente_existente(user_token.email, user_token.token)
+    return get_facturas_by_cliente(db, nit = nit)
 
 @router.get("/facturas/{id}", response_model=FacturaResponse)
 def obtener_factura_por_id(id: int, db: Session = Depends(get_db)):

@@ -23,3 +23,10 @@ def get_factura_by_id(db: Session, factura_id: int) -> Factura:
 def get_all_facturas(db: Session) -> list[Factura]:
     return db.query(Factura).all()
 
+
+def get_facturas_by_cliente(db: Session, nit = str) -> list[Factura]:
+    return db.query(Factura).filter(Factura.cliente_nit == nit).all()
+
+
+
+
