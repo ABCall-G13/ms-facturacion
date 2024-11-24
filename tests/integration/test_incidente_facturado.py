@@ -45,13 +45,16 @@ def test_create_incidente_facturado(client):
     incidente_data = {
         "radicado_incidente": "RAD-001",
         "costo": 50.0,
-        "fecha_incidente": "2024-01-15"
+        "fecha_incidente": "2024-01-15",
+        "nit": "123456789"  # Agregar el NIT necesario para la búsqueda de la factura
     }
     response = client.post("/incidentes", json=incidente_data)
     assert response.status_code == 200
     assert response.json()["radicado_incidente"] == incidente_data["radicado_incidente"]
 
+
 def test_listar_incidentes_por_factura(client):
+    # Crear una factura
     factura_data = {
         "cliente_nit": "123456789",
         "fecha_inicio": "2024-01-01",
@@ -64,19 +67,23 @@ def test_listar_incidentes_por_factura(client):
     response = client.post("/facturas", json=factura_data)
     factura_id = response.json()["id"]
 
+    # Crear incidentes relacionados con la factura
     incidente_1 = {
         "radicado_incidente": "RAD-002",
         "costo": 60.0,
-        "fecha_incidente": "2024-01-15"
+        "fecha_incidente": "2024-01-15",
+        "nit": "123456789"  # Agregar el NIT necesario para la búsqueda de la factura
     }
     incidente_2 = {
         "radicado_incidente": "RAD-003",
         "costo": 30.0,
-        "fecha_incidente": "2024-01-20"
+        "fecha_incidente": "2024-01-20",
+        "nit": "123456789"  # Agregar el NIT necesario para la búsqueda de la factura
     }
     client.post("/incidentes", json=incidente_1)
     client.post("/incidentes", json=incidente_2)
 
+    # Listar los incidentes por factura
     response = client.get(f"/facturas/{factura_id}/incidentes")
     assert response.status_code == 200
     incidentes = response.json()

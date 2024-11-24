@@ -48,7 +48,8 @@ def test_create_incidente_facturado(db_session):
     incidente_data = incidente_facturadoCreate(
         radicado_incidente="RAD-001",
         costo=50.0,
-        fecha_incidente="2024-01-15"
+        fecha_incidente="2024-01-15",
+        nit="123456789"
     )
     # Se espera que el create_incidente_facturado calcule el factura_id automáticamente
     incidente = create_incidente_facturado(db_session, {
@@ -81,7 +82,8 @@ def test_get_incidente_by_id(db_session):
     incidente_data = incidente_facturadoCreate(
         radicado_incidente="RAD-002",
         costo=60.0,
-        fecha_incidente="2024-03-20"
+        fecha_incidente="2024-03-20",
+        nit="123456789"
     )
     incidente = create_incidente_facturado(db_session, {
         "radicado_incidente": incidente_data.radicado_incidente,
@@ -118,12 +120,14 @@ def test_get_incidentes_by_factura(db_session):
     incidente_1 = incidente_facturadoCreate(
         radicado_incidente="RAD-003",
         costo=30.0,
-        fecha_incidente="2024-02-10"
+        fecha_incidente="2024-02-10",
+        nit="123456789"
     )
     incidente_2 = incidente_facturadoCreate(
         radicado_incidente="RAD-004",
         costo=40.0,
-        fecha_incidente="2024-02-15"
+        fecha_incidente="2024-02-15",
+        nit="123456789"
     )
     create_incidente_facturado(db_session, {
         "radicado_incidente": incidente_1.radicado_incidente,
