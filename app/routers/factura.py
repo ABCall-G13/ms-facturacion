@@ -30,14 +30,14 @@ async def listar_facturas(db: Session = Depends(get_db),  user_token: UserToken 
     return get_facturas_by_cliente(db, nit = nit)
 
 @router.get("/facturas/{id}", response_model=FacturaResponse)
-def obtener_factura_por_id(id: str, db: Session = Depends(get_db)):
-    factura = get_factura_by_id(db, factura_id=int(id))
+def obtener_factura_por_id(id: int, db: Session = Depends(get_db)):
+    factura = get_factura_by_id(db, factura_id=id)
     if factura is None:
         raise HTTPException(status_code=404, detail="Factura no encontrada")
     return factura
 
 @router.get("/facturas/{factura_id}/download", response_class=FileResponse)
-def descargar_factura_pdf(factura_id: str, db: Session = Depends(get_db)):
+def descargar_factura_pdf(factura_id: int, db: Session = Depends(get_db)):
 
     try:
         factura = get_factura_by_id(db, int(factura_id))
