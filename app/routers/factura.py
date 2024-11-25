@@ -30,24 +30,24 @@ async def listar_facturas(db: Session = Depends(get_db),  user_token: UserToken 
     return get_facturas_by_cliente(db, nit = nit)
 
 @router.get("/facturas/{id}", response_model=FacturaResponse)
-def obtener_factura_por_id(id: int, db: Session = Depends(get_db)):
-    factura = get_factura_by_id(db, factura_id=id)
+def obtener_factura_por_id(id: str, db: Session = Depends(get_db)):
+    factura = get_factura_by_id(db, factura_id=int(id))
     if factura is None:
         raise HTTPException(status_code=404, detail="Factura no encontrada")
     return factura
 
 @router.get("/facturas/{factura_id}/download", response_class=FileResponse)
-def descargar_factura_pdf(factura_id: int, db: Session = Depends(get_db)):
+def descargar_factura_pdf(factura_id: str, db: Session = Depends(get_db)):
 
     try:
-        factura = get_factura_by_id(db, factura_id)
+        factura = get_factura_by_id(db, int(factura_id))
         if not factura:
             raise HTTPException(status_code=404, detail="Factura no encontrada")
 
         with tempfile.NamedTemporaryFile(delete=True, suffix=".pdf") as temp_pdf:
             pdf_path = temp_pdf.name
 
-        generar_pdf_factura(factura_id, db, pdf_path)
+        generar_pdf_factura(int(factura_id), db, pdf_path)
         
         response = FileResponse(
             path=pdf_path,

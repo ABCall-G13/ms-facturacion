@@ -2,7 +2,7 @@ from yarl import URL
 import httpx
 from fastapi import HTTPException
 from app import config
-import re
+
 
 async def verificar_cliente_existente(email: str, token: str) -> str:
     base_url = URL(config.URL_SERVICE_CLIENT)
