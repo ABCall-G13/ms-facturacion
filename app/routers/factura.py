@@ -26,6 +26,7 @@ def listar_facturas(db: Session = Depends(get_db)):
 @router.get("/facturas-by-client", response_model=List[FacturaResponse])
 async def listar_facturas(db: Session = Depends(get_db),  user_token: UserToken = Depends(get_current_user_token),):
     nit = await verificar_cliente_existente(user_token.email, user_token.token)
+    print("PASO : ", nit)
     return get_facturas_by_cliente(db, nit = nit)
 
 @router.get("/facturas/{id}", response_model=FacturaResponse)
