@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS incidentes_facturados (
     factura_id INT NOT NULL,
     costo DECIMAL(10, 2) NOT NULL,
     fecha_incidente DATE NOT NULL,
-    radicado_incidente VARCHAR(60) NOT NULL, 
+    radicado_incidente VARCHAR(60) NOT NULL,
+    cliente_id INT NOT NULL, 
     FOREIGN KEY (factura_id) REFERENCES facturas(id) ON DELETE CASCADE,
     INDEX (fecha_incidente)
 );

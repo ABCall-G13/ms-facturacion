@@ -1,5 +1,5 @@
 import tempfile
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from app.external_services.cliente_service import verificar_cliente_existente
@@ -26,7 +26,6 @@ def listar_facturas(db: Session = Depends(get_db)):
 @router.get("/facturas-by-client", response_model=List[FacturaResponse])
 async def listar_facturas(db: Session = Depends(get_db),  user_token: UserToken = Depends(get_current_user_token),):
     nit = await verificar_cliente_existente(user_token.email, user_token.token)
-    print("PASO : ", nit)
     return get_facturas_by_cliente(db, nit = nit)
 
 @router.get("/facturas/{id}", response_model=FacturaResponse)
@@ -37,7 +36,12 @@ def obtener_factura_por_id(id: int, db: Session = Depends(get_db)):
     return factura
 
 @router.get("/facturas/{factura_id}/download", response_class=FileResponse)
-def descargar_factura_pdf(factura_id: int, db: Session = Depends(get_db)):
+def descargar_factura_pdf(
+    factura_id: int,
+    db: Session = Depends(get_db),
+    currency: str = Query(default="COP", description="Currency to determine the language (e.g., 'COP', 'USD')"),
+    language: str = Query(default="es", description="Lenguaje del documento (e.g., 'es', 'en')") 
+):
 
     try:
         factura = get_factura_by_id(db, int(factura_id))
@@ -47,7 +51,7 @@ def descargar_factura_pdf(factura_id: int, db: Session = Depends(get_db)):
         with tempfile.NamedTemporaryFile(delete=True, suffix=".pdf") as temp_pdf:
             pdf_path = temp_pdf.name
 
-        generar_pdf_factura(int(factura_id), db, pdf_path)
+        generar_pdf_factura(int(factura_id), db, pdf_path, currency,language)
         
         response = FileResponse(
             path=pdf_path,

@@ -10,6 +10,7 @@ class IncidenteFacturado(Base):
     radicado_incidente = Column(String, nullable=False)
     costo = Column(Float, nullable=False)
     fecha_incidente = Column(Date, nullable=False)
+    cliente_id = Column(Integer, nullable=False)
 
     factura = relationship("Factura", back_populates="incidentes")
 

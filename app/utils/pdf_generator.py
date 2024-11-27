@@ -9,33 +9,69 @@ from app.models.factura import Factura
 from app.models.incidente_factura import IncidenteFacturado
 
 
-def generar_pdf_factura(factura_id: int, db: Session, ruta: str):
-    
+def generar_pdf_factura(factura_id: int, db: Session, ruta: str, currency: str = "COP", lenguage: str = "es"):
     factura = db.query(Factura).filter(Factura.id == factura_id).first()
     if not factura:
         raise ValueError(f"No se encontró ninguna factura con el ID {factura_id}")
     
     incidentes = db.query(IncidenteFacturado).filter(IncidenteFacturado.factura_id == factura_id).all()
     total_incidentes = len(incidentes)
+    
+    # Conversión de moneda
+    tasa_conversion = 4000
+    conversion = 1 if currency == "COP" else 1 / tasa_conversion
+    simbolo_moneda = "$" if currency == "COP" else "USD$"
 
+    # Traducción de etiquetas
+    etiquetas = {
+        "es": {
+            "factura_id": "Factura ID",
+            "cliente_nit": "Cliente NIT",
+            "periodo_facturado": "Periodo Facturado",
+            "monto_base": "Monto Base",
+            "monto_adicional": "Monto Adicional",
+            "monto_total": "Monto Total",
+            "total_incidentes": "Total de Incidentes",
+            "detalles_incidentes": "Detalles de los Incidentes",
+            "radicado": "Radicado",
+            "costo": "Costo",
+            "fecha": "Fecha"
+        },
+        "en": {
+            "factura_id": "Invoice ID",
+            "cliente_nit": "Customer NIT",
+            "periodo_facturado": "Billed Period",
+            "monto_base": "Base Amount",
+            "monto_adicional": "Additional Amount",
+            "monto_total": "Total Amount",
+            "total_incidentes": "Total Incidents",
+            "detalles_incidentes": "Incident Details",
+            "radicado": "Filed Number",
+            "costo": "Cost",
+            "fecha": "Date"
+        }
+    }
 
+    etiquetas = etiquetas[lenguage]
+
+    # Crear documento PDF
     doc = SimpleDocTemplate(ruta, pagesize=letter)
     styles = getSampleStyleSheet()
     elements = []
 
-    elements.append(Paragraph(f"Factura ID: {factura.id}", styles["Title"]))
+    elements.append(Paragraph(f"{etiquetas['factura_id']}: {factura.id}", styles["Title"]))
     elements.append(Spacer(1, 20))
 
     info_factura = [
-        ["Cliente NIT:", factura.cliente_nit],
-        ["Periodo Facturado:", f"{factura.fecha_inicio} a {factura.fecha_fin}"],
-        ["Monto Base:", f"${factura.monto_base:.2f}"],
-        ["Monto Adicional:", f"${factura.monto_adicional:.2f}"],
-        ["Monto Total:", f"${factura.monto_total:.2f}"],
-        ["Total de Incidentes:", str(total_incidentes)],
+        [etiquetas["cliente_nit"], factura.cliente_nit],
+        [etiquetas["periodo_facturado"], f"{factura.fecha_inicio} a {factura.fecha_fin}"],
+        [etiquetas["monto_base"], f"{simbolo_moneda} {factura.monto_base * conversion:.2f}"],
+        [etiquetas["monto_adicional"], f"{simbolo_moneda} {factura.monto_adicional * conversion:.2f}"],
+        [etiquetas["monto_total"], f"{simbolo_moneda} {factura.monto_total * conversion:.2f}"],
+        [etiquetas["total_incidentes"], str(total_incidentes)],
     ]
 
-    tabla_info = Table(info_factura, colWidths=[150, 300])
+    tabla_info = Table(info_factura, colWidths=[200, 300])
     tabla_info.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (1, 0), colors.whitesmoke),
@@ -49,12 +85,12 @@ def generar_pdf_factura(factura_id: int, db: Session, ruta: str):
     elements.append(Spacer(1, 20))
 
     if total_incidentes > 0:
-        elements.append(Paragraph("Detalles de los Incidentes", styles["Heading2"]))
-        data_incidentes = [["Radicado", "Costo", "Fecha"]]
+        elements.append(Paragraph(etiquetas["detalles_incidentes"], styles["Heading2"]))
+        data_incidentes = [[etiquetas["radicado"], etiquetas["costo"], etiquetas["fecha"]]]
         for incidente in incidentes:
             data_incidentes.append([
                 incidente.radicado_incidente,
-                f"${incidente.costo:.2f}",
+                f"{simbolo_moneda} {incidente.costo * conversion:.2f}",
                 str(incidente.fecha_incidente),
             ])
 
@@ -77,5 +113,3 @@ def generar_pdf_factura(factura_id: int, db: Session, ruta: str):
         print(f"PDF guardado en: {ruta}")
     else:
         print(f"Error: No se pudo guardar el PDF en: {ruta}")
-
-

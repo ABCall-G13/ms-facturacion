@@ -46,7 +46,8 @@ def test_create_incidente_facturado(client):
         "radicado_incidente": "RAD-001",
         "costo": 50.0,
         "fecha_incidente": "2024-01-15",
-        "nit": "123456789"  # Agregar el NIT necesario para la búsqueda de la factura
+        "nit": "123456789",  # Agregar el NIT necesario para la búsqueda de la factura
+        "cliente_id": 1
     }
     response = client.post("/incidentes", json=incidente_data)
     assert response.status_code == 200
@@ -72,13 +73,15 @@ def test_listar_incidentes_por_factura(client):
         "radicado_incidente": "RAD-002",
         "costo": 60.0,
         "fecha_incidente": "2024-01-15",
-        "nit": "123456789"  # Agregar el NIT necesario para la búsqueda de la factura
+        "nit": "123456789",  # Agregar el NIT necesario para la búsqueda de la factura
+        "cliente_id": 1
     }
     incidente_2 = {
         "radicado_incidente": "RAD-003",
         "costo": 30.0,
         "fecha_incidente": "2024-01-20",
-        "nit": "123456789"  # Agregar el NIT necesario para la búsqueda de la factura
+        "nit": "123456789",  # Agregar el NIT necesario para la búsqueda de la factura
+        "cliente_id": 1
     }
     client.post("/incidentes", json=incidente_1)
     client.post("/incidentes", json=incidente_2)
