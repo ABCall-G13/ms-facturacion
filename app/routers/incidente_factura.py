@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from app.models.factura import Factura
 from app.schemas.incidente_factura import incidente_facturadoCreate, incidente_facturadoResponse
@@ -28,7 +28,8 @@ def registrar_incidente(
         "radicado_incidente": incidente.radicado_incidente,
         "factura_id": factura.id,  # Usar el id de la factura encontrada
         "costo": incidente.costo,
-        "fecha_incidente": incidente.fecha_incidente
+        "fecha_incidente": incidente.fecha_incidente,
+        "cliente_id": incidente.cliente_id
     }
 
     return create_incidente_facturado(db=db, incidente=incidente_facturado_data)
@@ -42,5 +43,9 @@ def obtener_incidente(id: int, db: Session = Depends(get_db)):
     return incidente
 
 @router.get("/facturas/{factura_id}/incidentes", response_model=List[incidente_facturadoResponse])
-def listar_incidentes_por_factura(factura_id: int, db: Session = Depends(get_db)):
-    return get_incidentes_by_factura(db=db, factura_id=factura_id)
+def listar_incidentes_por_factura(
+    factura_id: int,
+    currency: str = Query(default="COP", description="Currency to determine the language (e.g., 'COP', 'USD')"),
+    db: Session = Depends(get_db)
+):
+    return get_incidentes_by_factura(db=db, factura_id=factura_id, currency=currency)

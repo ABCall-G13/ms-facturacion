@@ -125,6 +125,9 @@ def test_descargar_factura(client):
     response = client.post("/facturas", json=factura_data)
     factura_id = response.json()["id"]
 
-    response = client.get(f"/facturas/{factura_id}/download")
+    response = client.get(
+        f"/facturas/{factura_id}/download",
+        params={"currency": "COP", "language": "es"}
+    )
     assert response.status_code == 200
     assert response.headers["content-type"] == "application/pdf"

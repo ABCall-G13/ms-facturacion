@@ -49,14 +49,16 @@ def test_create_incidente_facturado(db_session):
         radicado_incidente="RAD-001",
         costo=50.0,
         fecha_incidente="2024-01-15",
-        nit="123456789"
+        nit="123456789",
+        cliente_id=1
     )
     # Se espera que el create_incidente_facturado calcule el factura_id automáticamente
     incidente = create_incidente_facturado(db_session, {
         "radicado_incidente": incidente_data.radicado_incidente,
         "factura_id": factura.id,  # Simulamos el cálculo dinámico
         "costo": incidente_data.costo,
-        "fecha_incidente": incidente_data.fecha_incidente
+        "fecha_incidente": incidente_data.fecha_incidente,
+        "cliente_id": 1
     })
 
     assert incidente.factura_id == factura.id
@@ -83,13 +85,15 @@ def test_get_incidente_by_id(db_session):
         radicado_incidente="RAD-002",
         costo=60.0,
         fecha_incidente="2024-03-20",
-        nit="123456789"
+        nit="123456789",
+        cliente_id=1
     )
     incidente = create_incidente_facturado(db_session, {
         "radicado_incidente": incidente_data.radicado_incidente,
         "factura_id": factura.id,  # Simulamos el cálculo dinámico
         "costo": incidente_data.costo,
-        "fecha_incidente": incidente_data.fecha_incidente
+        "fecha_incidente": incidente_data.fecha_incidente,
+        "cliente_id": incidente_data.cliente_id
     })
 
     # Obtener el incidente por ID
@@ -121,25 +125,29 @@ def test_get_incidentes_by_factura(db_session):
         radicado_incidente="RAD-003",
         costo=30.0,
         fecha_incidente="2024-02-10",
-        nit="123456789"
+        nit="123456789",
+        cliente_id=1
     )
     incidente_2 = incidente_facturadoCreate(
         radicado_incidente="RAD-004",
         costo=40.0,
         fecha_incidente="2024-02-15",
-        nit="123456789"
+        nit="123456789",
+        cliente_id=1
     )
     create_incidente_facturado(db_session, {
         "radicado_incidente": incidente_1.radicado_incidente,
         "factura_id": factura.id,  # Simulamos el cálculo dinámico
         "costo": incidente_1.costo,
-        "fecha_incidente": incidente_1.fecha_incidente
+        "fecha_incidente": incidente_1.fecha_incidente,
+        "cliente_id": incidente_1.cliente_id
     })
     create_incidente_facturado(db_session, {
         "radicado_incidente": incidente_2.radicado_incidente,
         "factura_id": factura.id,  # Simulamos el cálculo dinámico
         "costo": incidente_2.costo,
-        "fecha_incidente": incidente_2.fecha_incidente
+        "fecha_incidente": incidente_2.fecha_incidente,
+        "cliente_id": incidente_2.cliente_id
     })
 
     # Obtener los incidentes de la factura

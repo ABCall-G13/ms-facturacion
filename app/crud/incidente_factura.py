@@ -8,6 +8,7 @@ def create_incidente_facturado(db: Session, incidente: dict) -> IncidenteFactura
         factura_id=incidente["factura_id"],
         costo=incidente["costo"],
         fecha_incidente=incidente["fecha_incidente"],
+        cliente_id=incidente["cliente_id"]
     )
     db.add(nuevo_incidente)
     db.commit()
@@ -17,5 +18,13 @@ def create_incidente_facturado(db: Session, incidente: dict) -> IncidenteFactura
 def get_incidente_by_id(db: Session, incidente_id: int) -> IncidenteFacturado:
     return db.query(IncidenteFacturado).filter(IncidenteFacturado.id == incidente_id).first()
 
-def get_incidentes_by_factura(db: Session, factura_id: int) -> list[IncidenteFacturado]:
-    return db.query(IncidenteFacturado).filter(IncidenteFacturado.factura_id == factura_id).all()
+def get_incidentes_by_factura(db: Session, factura_id: int, currency: str = "COP") -> list[IncidenteFacturado]:
+    incidentes = db.query(IncidenteFacturado).filter(IncidenteFacturado.factura_id == factura_id).all()
+    
+    tasa_conversion = 4000
+
+    for incidente in incidentes:
+        if currency == "USD":
+            incidente.costo = round(incidente.costo / tasa_conversion, 2)
+
+    return incidentes
