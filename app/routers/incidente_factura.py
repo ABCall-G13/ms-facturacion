@@ -23,10 +23,9 @@ def registrar_incidente(
     if not factura:
         raise HTTPException(status_code=404, detail="No se encontró una factura para la fecha y el cliente proporcionados")
 
-    # Crear el incidente facturado con el factura_id calculado
     incidente_facturado_data = {
         "radicado_incidente": incidente.radicado_incidente,
-        "factura_id": factura.id,  # Usar el id de la factura encontrada
+        "factura_id": factura.id,
         "costo": incidente.costo,
         "fecha_incidente": incidente.fecha_incidente,
         "cliente_id": incidente.cliente_id

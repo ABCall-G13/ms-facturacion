@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from app.models.factura import Factura
 from app.models.incidente_factura import IncidenteFacturado
 
 
@@ -10,10 +11,17 @@ def create_incidente_facturado(db: Session, incidente: dict) -> IncidenteFactura
         fecha_incidente=incidente["fecha_incidente"],
         cliente_id=incidente["cliente_id"]
     )
+    factura = db.query(Factura).filter(Factura.id == incidente["factura_id"]).first()
+    factura.monto_adicional += incidente["costo"]
+    factura.monto_total = factura.monto_base + factura.monto_adicional
     db.add(nuevo_incidente)
     db.commit()
     db.refresh(nuevo_incidente)
+    db.refresh(factura)
     return nuevo_incidente
+
+
+
 
 def get_incidente_by_id(db: Session, incidente_id: int) -> IncidenteFacturado:
     return db.query(IncidenteFacturado).filter(IncidenteFacturado.id == incidente_id).first()
