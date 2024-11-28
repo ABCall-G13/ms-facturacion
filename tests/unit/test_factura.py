@@ -40,7 +40,8 @@ def test_create_factura(db_session):
         monto_base=100.0,
         monto_adicional=20.0,
         monto_total=120.0,
-        estado="pendiente"
+        estado="pendiente",
+        cliente_id=1
     )
 
     factura = create_factura(db_session, factura_data)
@@ -60,7 +61,8 @@ def test_get_all_facturas(db_session):
         monto_base=100.0,
         monto_adicional=20.0,
         monto_total=120.0,
-        estado="pendiente"
+        estado="pendiente",
+        cliente_id=1
     )
     factura_2 = FacturaCreate(
         cliente_nit="987654321",
@@ -69,7 +71,8 @@ def test_get_all_facturas(db_session):
         monto_base=200.0,
         monto_adicional=50.0,
         monto_total=250.0,
-        estado="pagada"
+        estado="pagada",
+        cliente_id=1
     )
     create_factura(db_session, factura_1)
     create_factura(db_session, factura_2)
@@ -90,7 +93,8 @@ def test_get_factura_by_id(db_session):
         monto_base=300.0,
         monto_adicional=30.0,
         monto_total=330.0,
-        estado="pendiente"
+        estado="pendiente",
+        cliente_id=1
     )
     factura = create_factura(db_session, factura_data)
 
@@ -114,7 +118,8 @@ def test_get_facturas_by_cliente(db_session):
         monto_base=100.0,
         monto_adicional=20.0,
         monto_total=120.0,
-        estado="pendiente"
+        estado="pendiente",
+        cliente_id=1
     )
     factura_2 = FacturaCreate(
         cliente_nit="123456789",
@@ -123,7 +128,8 @@ def test_get_facturas_by_cliente(db_session):
         monto_base=200.0,
         monto_adicional=50.0,
         monto_total=250.0,
-        estado="pagada"
+        estado="pagada",
+        cliente_id=1
     )
     factura_3 = FacturaCreate(
         cliente_nit="987654321",
@@ -132,7 +138,8 @@ def test_get_facturas_by_cliente(db_session):
         monto_base=300.0,
         monto_adicional=30.0,
         monto_total=330.0,
-        estado="pendiente"
+        estado="pendiente",
+        cliente_id=1
     )
     create_factura(db_session, factura_1)
     create_factura(db_session, factura_2)
@@ -160,7 +167,8 @@ def test_create_factura_sin_monto_adicional(db_session):
         monto_base=150.0,
         monto_adicional=None,
         monto_total=150.0,
-        estado="pendiente"
+        estado="pendiente",
+        cliente_id=1
     )
 
     factura = create_factura(db_session, factura_data)

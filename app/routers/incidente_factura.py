@@ -23,7 +23,6 @@ def registrar_incidente(
     if not factura:
         raise HTTPException(status_code=404, detail="No se encontró una factura para la fecha y el cliente proporcionados")
 
-    print("FACTURA ENCONTRADA  :" + str(factura.id))
     incidente_facturado_data = {
         "radicado_incidente": incidente.radicado_incidente,
         "factura_id": factura.id,

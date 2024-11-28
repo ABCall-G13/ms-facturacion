@@ -12,6 +12,7 @@ class FacturaBase(BaseModel):
     monto_adicional: Optional[float] = 0.0
     monto_total: float
     estado: Optional[str] = "pendiente"
+    cliente_id: int
     
     
 class FacturaCreate(FacturaBase):

@@ -15,6 +15,7 @@ class Factura(Base):
     monto_total = Column(Float, nullable=False)
     estado = Column(String(50), default="pendiente")
     pdf_url = Column(String(255))
+    cliente_id = Column(Integer, nullable=False)
 
     # Relación con IncidenteFacturado
     incidentes = relationship(

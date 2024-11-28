@@ -40,7 +40,8 @@ def test_create_incidente_facturado(db_session):
         monto_base=100.0,
         monto_adicional=20.0,
         monto_total=120.0,
-        estado="pendiente"
+        estado="pendiente",
+        cliente_id=1
     )
     factura = create_factura(db_session, factura_data)
 
@@ -76,7 +77,8 @@ def test_get_incidente_by_id(db_session):
         monto_base=300.0,
         monto_adicional=30.0,
         monto_total=330.0,
-        estado="pendiente"
+        estado="pendiente",
+        cliente_id=1
     )
     factura = create_factura(db_session, factura_data)
 
@@ -116,7 +118,8 @@ def test_get_incidentes_by_factura(db_session):
         monto_base=200.0,
         monto_adicional=50.0,
         monto_total=250.0,
-        estado="pagada"
+        estado="pagada",
+        cliente_id=1
     )
     factura = create_factura(db_session, factura_data)
 

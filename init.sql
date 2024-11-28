@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS facturas (
     monto_total DECIMAL(10, 2) NOT NULL,
     estado VARCHAR(50) DEFAULT 'pendiente',
     pdf_url VARCHAR(255) DEFAULT NULL,
+    cliente_id INT NOT NULL,
     INDEX (fecha_inicio),
     INDEX (fecha_fin),
     INDEX (cliente_nit) 

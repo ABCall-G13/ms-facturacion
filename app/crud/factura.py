@@ -10,7 +10,8 @@ def create_factura(db: Session, factura: FacturaCreate) -> Factura:
         monto_base=factura.monto_base,
         monto_adicional=factura.monto_adicional,
         monto_total=factura.monto_total,
-        estado=factura.estado
+        estado=factura.estado,
+        cliente_id=factura.cliente_id
     )
     db.add(nueva_factura)
     db.commit()

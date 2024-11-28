@@ -38,7 +38,8 @@ def test_listar_facturas_by_client_success(client):
             "monto_base": 100.0,
             "monto_adicional": 20.0,
             "monto_total": 120.0,
-            "estado": "pendiente"
+            "estado": "pendiente",
+            "cliente_id": 1
         }
         response = client.post("/facturas", json=factura_data)
         assert response.status_code == 200
@@ -60,7 +61,8 @@ def test_create_factura(client):
         "monto_base": 100.0,
         "monto_adicional": 20.0,
         "monto_total": 120.0,
-        "estado": "pendiente"
+        "estado": "pendiente",
+        "cliente_id": 1
     }
     response = client.post("/facturas", json=factura_data)
     assert response.status_code == 200
@@ -74,7 +76,8 @@ def test_listar_facturas(client):
         "monto_base": 100.0,
         "monto_adicional": 20.0,
         "monto_total": 120.0,
-        "estado": "pendiente"
+        "estado": "pendiente",
+        "cliente_id": 1
     }
     factura_2 = {
         "cliente_nit": "987654321",
@@ -83,7 +86,8 @@ def test_listar_facturas(client):
         "monto_base": 200.0,
         "monto_adicional": 50.0,
         "monto_total": 250.0,
-        "estado": "pagada"
+        "estado": "pagada",
+        "cliente_id": 1
     }
     client.post("/facturas", json=factura_1)
     client.post("/facturas", json=factura_2)
@@ -103,7 +107,8 @@ def test_obtener_factura_por_id(client):
         "monto_base": 100.0,
         "monto_adicional": 20.0,
         "monto_total": 120.0,
-        "estado": "pendiente"
+        "estado": "pendiente",
+        "cliente_id": 1
     }
     response = client.post("/facturas", json=factura_data)
     factura_id = response.json()["id"]
@@ -120,7 +125,8 @@ def test_descargar_factura(client):
         "monto_base": 100.0,
         "monto_adicional": 20.0,
         "monto_total": 120.0,
-        "estado": "pendiente"
+        "estado": "pendiente",
+        "cliente_id": 1
     }
     response = client.post("/facturas", json=factura_data)
     factura_id = response.json()["id"]
