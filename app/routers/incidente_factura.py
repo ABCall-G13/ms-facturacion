@@ -13,12 +13,14 @@ def registrar_incidente(
     incidente: incidente_facturadoCreate, 
     db: Session = Depends(get_db)
 ):
-    # Buscar la factura correspondiente a la fecha y al NIT del cliente
+    
     factura = db.query(Factura).filter(
         Factura.fecha_inicio <= incidente.fecha_incidente,
         Factura.fecha_fin >= incidente.fecha_incidente,
-        Factura.cliente_nit == incidente.nit  # Filtro adicional por NIT del cliente
+        Factura.cliente_id == incidente.cliente_id 
     ).first()
+    
+    print(factura)
 
     if not factura:
         raise HTTPException(status_code=404, detail="No se encontró una factura para la fecha y el cliente proporcionados")
@@ -28,7 +30,7 @@ def registrar_incidente(
         "factura_id": factura.id,
         "costo": incidente.costo,
         "fecha_incidente": incidente.fecha_incidente,
-        "cliente_id": incidente.cliente_id
+        "cliente_id": factura.cliente_id
     }
 
     return create_incidente_facturado(db=db, incidente=incidente_facturado_data)

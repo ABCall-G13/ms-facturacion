@@ -11,6 +11,7 @@ def create_incidente_facturado(db: Session, incidente: dict) -> IncidenteFactura
         fecha_incidente=incidente["fecha_incidente"],
         cliente_id=incidente["cliente_id"]
     )
+
     factura = db.query(Factura).filter(Factura.id == incidente["factura_id"]).first()
     factura.monto_adicional += incidente["costo"]
     factura.monto_total = factura.monto_base + factura.monto_adicional

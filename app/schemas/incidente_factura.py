@@ -9,7 +9,7 @@ class incidente_facturadoBase(BaseModel):
     cliente_id: int
 
 class incidente_facturadoCreate(incidente_facturadoBase):
-    nit: str
+    pass
 
 class incidente_facturadoResponse(incidente_facturadoBase):
     id: int
